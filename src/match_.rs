@@ -221,7 +221,8 @@ mod test {
     #[test]
     fn is_substring_multiline() {
         let ann = "mismatched types\nexpected `i8`\nfound `u8`";
-        let msg = "mismatched types:\n expected `i8`,\n    found `u8`\n(expected i8,\n    found u8) [E0308]";
+        let msg = "mismatched types:\n expected `i8`,\n    found `u8`\n(expected i8,\
+                   \n    found u8) [E0308]";
         assert!(super::is_substring(ann, msg));
     }
 }

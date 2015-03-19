@@ -1,0 +1,27 @@
+language: rust
+sudo: false
+
+env:
+  global:
+    - secure: KT2mXMSW342Sg9aTw6T7ihpB6RZq6exRrTwpKFbYBE/F3+eWXrbuGqfnLKv+HEAtPRhkyKnFktbEgPh+38Pv+hvZ+4CnUu0XzrCm7QTPOaDVa/OsnaZhQ/zWYrutIVMJBGMgD+WhXHnlNfjCtTfTZ0mWNfvr9V5WvLcTwQkFwOc=
+
+install:
+  - git clone --depth 1 https://github.com/rust-lang/rust
+
+script:
+  - cargo build --verbose
+  - cargo test --verbose
+  - cargo doc --verbose
+  - cargo build --release
+  - target/release/cfail rust/src/test/compile-fail/*.rs || true
+  - rm -rf rust && ./check-line-length.sh
+
+after_success:
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && bash upload-docs.sh'
+
+branches:
+  only: master
+
+notifications:
+  email:
+    on_success: never

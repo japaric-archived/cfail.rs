@@ -27,12 +27,6 @@ pub mod lexer;
 /// ```
 ///
 /// These compiler spans will be ignored by the parser.
-///
-/// The stderr always ends with a:
-///
-/// ``` text
-/// error: aborting due to <n> previous errors
-/// ```
 pub struct Parser<'a> {
     input: &'a str,
     last_line: Option<usize>,
@@ -164,9 +158,8 @@ impl<'a> Iterator for Parser<'a> {
                 }
             }
 
-            // A compiler message can't never be the last line of stderr, because the last line is
-            // always the summary line, therefore this is unreachable.
-            unreachable!();
+            let end = self.start_of_line+curr_line.len();
+            return Some(Ok((ln, kind, &self.input[start..end])))
         }
 
         None

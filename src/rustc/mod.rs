@@ -1,5 +1,5 @@
 //! The `rustc` compiler
-use std::borrow::Cow;
+
 use std::collections::BTreeMap;
 use std::env;
 use std::path::{AsPath, Path};
@@ -14,37 +14,40 @@ use self::parse::Parser;
 pub mod parse;
 
 /// Compiler stderr
-pub struct Stderr<'a> {
-    source: Cow<'a, str>,
+pub struct Stderr {
+    source: String,
     stderr: String,
 }
 
 /// Compiles a source file, and returns the compiler stderr
-pub fn compile<P: ?Sized>(source: &P) -> Result<Stderr, Error> where
+pub fn compile<P: ?Sized>(source: &P, library_path: &str) -> Result<Stderr, Error> where
     P: AsPath,
 {
-    Stderr::new(source.as_path())
+    Stderr::new(source.as_path(), library_path)
 }
 
-impl<'a> Stderr<'a> {
-    fn new(path: &Path) -> Result<Stderr, Error> {
-        let temp_dir = try!(TempDir::new("cfail"));
-        let source = {
-            let mut cwd = try!(env::current_dir());
-            cwd.push(path);
-            cwd
-        };
+impl Stderr {
+    fn new(path: &Path, library_path: &str) -> Result<Stderr, Error> {
+        let current_dir = try!(env::current_dir());
+        let temp_dir = try!(TempDir::new_in(&current_dir, "cfail"));
+        let source = current_dir.join(path);
 
-        let output = try!(Command::new("rustc").
-            current_dir(temp_dir.path()).
-            arg(&source).
-            output());
+        let mut cmd = Command::new("rustc");
+        cmd.current_dir(temp_dir.path());
+
+        for path in library_path.split(':') {
+            cmd.arg("-L").arg(&current_dir.join(path));
+        }
+
+        cmd.arg(&source);
+
+        let output = try!(cmd.output());
 
         if output.status.success() {
             Err(Error::SuccessfulCompilation)
         } else {
             Ok(Stderr {
-                source: path.to_string_lossy(),
+                source: source.to_string_lossy().into_owned(),
                 stderr: String::from_utf8_lossy(&output.stderr).into_owned(),
             })
         }

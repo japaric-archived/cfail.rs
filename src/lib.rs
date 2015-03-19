@@ -81,6 +81,7 @@ pub type BytePos = usize;
 pub type LineMap<T> = BTreeMap<Line, T>;
 
 /// Errors
+#[derive(Debug)]
 pub enum Error {
     /// IO error
     Io(io::Error),
@@ -95,6 +96,7 @@ pub enum Error {
 }
 
 /// Unsupported `cfail` features
+#[derive(Debug)]
 pub enum Feature {
     /// Auxiliar build
     AuxBuild,
@@ -270,7 +272,8 @@ pub fn test<P: ?Sized>(source: &P) -> Result<Outcome, Error> where P: AsPath {
             Ok(annotations) => annotations,
         };
 
-        let output = try!(rustc::compile(&path));
+        let library_path = env::var("CFAIL_LIBRARY_PATH").unwrap_or(String::new());
+        let output = try!(rustc::compile(&path, &library_path));
         let messages = try!(output.parse());
 
         let mismatches = match_::match_(annotations, messages);

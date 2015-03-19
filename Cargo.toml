@@ -1,0 +1,14 @@
+[package]
+
+authors = ["Jorge Aparicio <japaricious@gmail.com>"]
+name = "cfail"
+version = "0.0.0"
+
+[[bin]]
+doc = false
+name = "cfail"
+path = "src/bin/cfail.rs"
+
+[dependencies]
+tempdir = "*"
+threadpool = "*"

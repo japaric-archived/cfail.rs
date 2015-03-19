@@ -1,25 +1,49 @@
 //! CLI tool
 
-#![allow(deprecated)]
-
-use std::{env, fmt};
+use std::env::{VarError, self};
+use std::fmt;
 use std::sync::mpsc;
 
 use threadpool::ThreadPool;
 
 use {Outcome, test};
 
-/// Error: no arguments passed to `cfail`
-struct NoArgs;
-
-impl fmt::Display for NoArgs {
+impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("expected at least one argument, got none")
+        match *self {
+            Error::MalformedRustThreads => {
+                f.write_str("the `RUST_THREADS` variable must contain a positive integer")
+            },
+            Error::NoArgs => {
+                f.write_str("expected at least one argument, got none")
+            },
+        }
     }
 }
 
-fn run() -> Result<(), NoArgs> {
+enum Error {
+    /// malformed `RUST_THREADS`
+    MalformedRustThreads,
+    /// no arguments passed to `cfail`
+    NoArgs,
+}
 
+fn num_cpus() -> Result<usize, Error> {
+    #![allow(deprecated)]
+
+    use std::os;
+
+    match env::var("RUST_THREADS") {
+        Ok(threads) => match threads.parse() {
+            Ok(threads) if threads > 0 => Ok(threads),
+            _ => Err(Error::MalformedRustThreads),
+        },
+        Err(VarError::NotPresent) => Ok(os::num_cpus()),
+        Err(_) => Err(Error::MalformedRustThreads),
+    }
+}
+
+fn run() -> Result<(), Error> {
     let args: Vec<_> = env::args_os().skip(1).collect();
     let mut errors = 0;
     let mut failed = 0;
@@ -27,11 +51,11 @@ fn run() -> Result<(), NoArgs> {
     let mut passed = 0;
 
     if args.is_empty() {
-        return Err(NoArgs);
+        return Err(Error::NoArgs);
     }
 
     let ntests = args.len();
-    let pool = ThreadPool::new(::std::os::num_cpus());
+    let pool = ThreadPool::new(try!(num_cpus()));
     let (tx, rx) = mpsc::channel();
 
     for path in args {

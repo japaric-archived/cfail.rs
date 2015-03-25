@@ -2,7 +2,7 @@
 
 use std::collections::BTreeMap;
 use std::env;
-use std::path::{AsPath, Path};
+use std::path::Path;
 use std::process::Command;
 
 use tempdir::TempDir;
@@ -21,9 +21,9 @@ pub struct Stderr {
 
 /// Compiles a source file, and returns the compiler stderr
 pub fn compile<P: ?Sized>(source: &P, library_path: &str) -> Result<Stderr, Error> where
-    P: AsPath,
+    P: AsRef<Path>,
 {
-    Stderr::new(source.as_path(), library_path)
+    Stderr::new(source.as_ref(), library_path)
 }
 
 impl Stderr {

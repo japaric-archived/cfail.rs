@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::{Read, self};
 use std::ops::Deref;
-use std::path::{AsPath, Path};
+use std::path::Path;
 
 use {Annotations, LineMap, Span};
 
@@ -18,9 +18,9 @@ pub struct Source(String);
 impl Source {
     /// Opens a rust source file
     pub fn open<P: ?Sized>(path: &P) -> io::Result<Source> where
-        P: AsPath,
+        P: AsRef<Path>,
     {
-        Source::open_(path.as_path())
+        Source::open_(path.as_ref())
     }
 
     fn open_(source: &Path) -> io::Result<Source> {

@@ -3,9 +3,11 @@
 #![deny(missing_docs)]
 #![deny(warnings)]
 #![feature(collections)]
+#![feature(convert)]
 #![feature(exit_status)]
+#![feature(into_cow)]
 #![feature(os)]
-#![feature(std_misc)]
+#![feature(unicode)]
 
 extern crate tempdir;
 extern crate threadpool;
@@ -15,7 +17,7 @@ use std::collections::BTreeMap;
 use std::error::FromError;
 use std::num::Int;
 use std::ops::{Add, Sub};
-use std::path::{AsPath, Path};
+use std::path::Path;
 use std::{env, fmt, io};
 
 pub mod driver;
@@ -236,7 +238,7 @@ pub enum Outcome {
 /// This function
 ///
 /// Note: this function should never panic, if it does that's a bug
-pub fn test<P: ?Sized>(source: &P) -> Result<Outcome, Error> where P: AsPath {
+pub fn test<P: ?Sized>(source: &P) -> Result<Outcome, Error> where P: AsRef<Path> {
     fn test_(path: &Path) -> Result<Outcome, Error> {
         use source::Source;
         use rustc;
@@ -274,5 +276,5 @@ pub fn test<P: ?Sized>(source: &P) -> Result<Outcome, Error> where P: AsPath {
         }
     }
 
-    test_(source.as_path())
+    test_(source.as_ref())
 }

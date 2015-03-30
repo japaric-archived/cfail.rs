@@ -7,6 +7,7 @@
 #![feature(exit_status)]
 #![feature(into_cow)]
 #![feature(os)]
+#![feature(slice_patterns)]
 #![feature(unicode)]
 
 extern crate tempdir;

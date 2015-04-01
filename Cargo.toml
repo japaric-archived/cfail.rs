@@ -8,6 +8,7 @@ version = "0.0.0"
 doc = false
 name = "cfail"
 path = "src/bin/cfail.rs"
+test = false
 
 [dependencies]
 tempdir = "*"

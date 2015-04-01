@@ -16,7 +16,6 @@ extern crate threadpool;
 use std::borrow::Cow;
 use std::collections::BTreeMap;
 use std::error::FromError;
-use std::num::Int;
 use std::ops::{Add, Sub};
 use std::path::Path;
 use std::{env, fmt, io};

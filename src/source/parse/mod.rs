@@ -3,7 +3,6 @@
 use std::borrow::{Cow, IntoCow};
 use std::fmt;
 use std::iter::{Peekable, self};
-use std::num::Int;
 use std::path::Path;
 use std::str::Lines;
 

@@ -3,19 +3,17 @@
 #![deny(missing_docs)]
 #![deny(warnings)]
 #![feature(collections)]
-#![feature(convert)]
 #![feature(exit_status)]
 #![feature(into_cow)]
-#![feature(os)]
 #![feature(slice_patterns)]
 #![feature(unicode)]
 
+extern crate num_cpus;
 extern crate tempdir;
 extern crate threadpool;
 
 use std::borrow::Cow;
 use std::collections::BTreeMap;
-use std::error::FromError;
 use std::ops::{Add, Sub};
 use std::path::Path;
 use std::{env, fmt, io};
@@ -113,8 +111,8 @@ impl fmt::Display for Feature {
     }
 }
 
-impl FromError<io::Error> for Error {
-    fn from_error(e: io::Error) -> Error {
+impl From<io::Error> for Error {
+    fn from(e: io::Error) -> Error {
         Error::Io(e)
     }
 }

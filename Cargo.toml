@@ -11,5 +11,6 @@ path = "src/bin/cfail.rs"
 test = false
 
 [dependencies]
+num_cpus = "*"
 tempdir = "*"
 threadpool = "*"

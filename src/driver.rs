@@ -4,6 +4,7 @@ use std::env::{VarError, self};
 use std::fmt;
 use std::sync::mpsc;
 
+use num_cpus;
 use threadpool::ThreadPool;
 
 use {Outcome, test};
@@ -29,16 +30,12 @@ enum Error {
 }
 
 fn num_cpus() -> Result<usize, Error> {
-    #![allow(deprecated)]
-
-    use std::os;
-
     match env::var("RUST_THREADS") {
         Ok(threads) => match threads.parse() {
             Ok(threads) if threads > 0 => Ok(threads),
             _ => Err(Error::MalformedRustThreads),
         },
-        Err(VarError::NotPresent) => Ok(os::num_cpus()),
+        Err(VarError::NotPresent) => Ok(num_cpus::get()),
         Err(_) => Err(Error::MalformedRustThreads),
     }
 }

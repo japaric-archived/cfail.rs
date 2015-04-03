@@ -8,7 +8,7 @@ use source::parse::Error;
 use {BytePos, Kind, Span};
 
 /// Tokens found in `cfail` annotations
-#[derive(Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Token {
     /// `^`
     Caret,

@@ -24,7 +24,7 @@ pub mod rustc;
 pub mod source;
 
 /// Source file line number
-#[derive(Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
 pub struct Line(u32);
 
 impl Add<u32> for Line {
@@ -50,7 +50,7 @@ impl Sub<u32> for Line {
 }
 
 /// Source file span
-#[derive(Copy, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Span(BytePos, BytePos);
 
 impl Add<BytePos> for Span {
@@ -143,7 +143,7 @@ const NKINDS: usize = 4;
 const KINDS: [Kind; 4] = [Kind::Error, Kind::Warning, Kind::Help, Kind::Note];
 
 /// "Kind" of compiler messages
-#[derive(Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Kind {
     /// `error`
     Error,

@@ -13,7 +13,7 @@ use self::lexer::{Lexer, Token};
 pub mod lexer;
 
 /// Parse errors
-#[derive(Copy, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum Error<'a> {
     /// Expected these tokens
     Expected(&'static [Token]),

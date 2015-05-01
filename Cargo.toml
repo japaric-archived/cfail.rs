@@ -14,3 +14,4 @@ test = false
 num_cpus = "*"
 tempdir = "*"
 threadpool = "*"
+unicode-width = "*"

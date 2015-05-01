@@ -6,6 +6,8 @@ use std::iter::{Peekable, self};
 use std::path::Path;
 use std::str::Lines;
 
+use unicode_width::UnicodeWidthStr;
+
 use {BytePos, Kind, Line, Span};
 
 use self::lexer::{Lexer, Token};
@@ -84,14 +86,13 @@ pub fn format_error(path: &Path, source: &str, span: Span, e: Error) -> String {
                                     path = path,
                                     line = ln,
                                     source = line));
-            let is_cjk = false;
             let ws =
-                path.width(is_cjk) +
-                ":".width(is_cjk) +
-                ln.width(is_cjk) +
-                " ".width(is_cjk) +
-                line[..start].width(is_cjk);
-            let span = line[start..end].width(is_cjk).checked_sub(1).unwrap_or(0);
+                UnicodeWidthStr::width(&*path) +
+                UnicodeWidthStr::width(":") +
+                UnicodeWidthStr::width(&*ln) +
+                UnicodeWidthStr::width(" ") +
+                UnicodeWidthStr::width(&line[..start]);
+            let span = UnicodeWidthStr::width(&line[start..end]).checked_sub(1).unwrap_or(0);
             error.push_str(&format!("{whitespace}^{span}",
                                     whitespace = iter::repeat(' ').take(ws).collect::<String>(),
                                     span = iter::repeat('~').take(span).collect::<String>()));

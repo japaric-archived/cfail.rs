@@ -6,11 +6,11 @@
 #![feature(exit_status)]
 #![feature(into_cow)]
 #![feature(slice_patterns)]
-#![feature(unicode)]
 
 extern crate num_cpus;
 extern crate tempdir;
 extern crate threadpool;
+extern crate unicode_width;
 
 use std::borrow::Cow;
 use std::collections::BTreeMap;

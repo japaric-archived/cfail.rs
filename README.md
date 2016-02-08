@@ -1,3 +1,16 @@
+# Status
+
+This project is **DEPRECATED**. You can use the [compiletest] crate that was extracted from Rust
+repository.
+
+[compiletest]: https://crates.io/crates/compiletest_rs
+
+This project won't receive further updates or bug fixes.
+
+-- @japaric, 2016/02/08
+
+---
+
 [![Build Status][status]](https://travis-ci.org/japaric/cfail.rs)
 
 # `cfail.rs`
